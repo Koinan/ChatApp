@@ -27,7 +27,6 @@ import java.util.ArrayList;
 public class ChatActivity extends AppCompatActivity {
     private ArrayList<ChatData> mensajess = new ArrayList<>();
     private MyAdapter myAdapter;
-    private ListView listview;
 
 
     @Override
@@ -35,14 +34,20 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Toolbar myToolBar = findViewById(R.id.toolbar_1);
-        listview = findViewById(R.id.listview_1);
-        myAdapter = new MyAdapter();
-        listview.setAdapter (new MyAdapter());
+
+
+
 
         setSupportActionBar(myToolBar);
         getSupportActionBar().setTitle("ChatApp");
+        ListView listview = findViewById(R.id.listview_1);
+        myAdapter = new MyAdapter();
+        listview.setAdapter (new MyAdapter());
+        listview.setEmptyView(findViewById(R.id.list_item));
+
         String url = "https://chatapp-1cf6d.firebaseio.com/";
         FirebaseDatabase database = FirebaseDatabase.getInstance(url);
+
 
         DatabaseReference referencia = database.getReference("messages");
         referencia.addValueEventListener(new ValueEventListener() {
@@ -86,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             //Éste método "infla" la XML con los datos
+
 
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.list_item, parent, false);
