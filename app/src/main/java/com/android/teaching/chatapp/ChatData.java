@@ -2,34 +2,27 @@ package com.android.teaching.chatapp;
 
 public class ChatData {
 
-    private String mtext;
-    private String musername;
+    private String text;
+            private String username;
 
     public ChatData() {
-        // empty constructor
+        this.text = text;
+        this.username = username;
     }
 
-    public String getName() {
-        return mName;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        mName = name;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getId() {
-        return mId;
+    public String getUsername() {
+        return username;
     }
 
-    public String getMessage() {
-        return mMessage;
-    }
-
-    public void setMessage(String message) {
-        mMessage = message;
-    }
-
-    public void setId(String id) {
-        mId = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
