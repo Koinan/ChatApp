@@ -28,6 +28,7 @@ public class ChatActivity extends AppCompatActivity {
     private MyAdapter myAdapter;
     private ListView lv1;
     private ArrayList<ChatData> mensajess = new ArrayList<>();
+
     public ArrayList<ChatData> getMensajess() {
         return mensajess;
     }
@@ -38,8 +39,9 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Toolbar myToolBar = findViewById(R.id.toolbar_1);
-        lv1=(ListView)findViewById(R.id.listview_1);
-        lv1.setAdapter(myAdapter);
+        ListView itemsListView  = (ListView) findViewById(R.id.listview_1);
+        itemsListView.setAdapter(myAdapter);
+
         setSupportActionBar(myToolBar);
         getSupportActionBar().setTitle("ChatApp");
         String url = "https://chatapp-1cf6d.firebaseio.com/";
@@ -51,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
                 for (DataSnapshot gameSnapshot:dataSnapshot.getChildren())
                 {
                     ChatData value = gameSnapshot.getValue(ChatData.class);
+
                     mensajess.add(value);
                     Log.d("Listadejuegos", "resultado: " + value.getUsername());
                     Log.d("Listadejuegos", "resultado: " + value.getText());
@@ -64,35 +67,52 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
     private class MyAdapter extends BaseAdapter {
+        private ArrayList<ChatData> mensajes;
+        private Context context;
+        public MyAdapter (Context context, ArrayList<ChatData> items) {
+
+            this.mensajes = mensajes;
+        }
+
 
         //Con ésta clase creo el adaptador, que hereda de Baseadapter
         @Override
         public int getCount() {
-            return getMensajess().size();
+            return mensajess.size();
         }
         //Count es el numero de items que tendrá, si tiene mas de la cuenta la aplicación se cierra
         @Override
-        public Object getItem(int i) {
-            return null;
+        public Object getItem(int position) {
+            return mensajess.get(position);
         }
 
         @Override
-        public long getItemId(int i) {
-            return 0;
+        public long getItemId(int position) {
+            return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             //Éste método "infla" la XML con los datos
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.list_item, parent, false);
-            //Situo los iconos y los nombres y les añado una posición en la lista
-            TextView textView = rowView.findViewById(R.id.textomensajes);
-            textView.setText(getMensajess().get(position).getText());
-            TextView textView2 = rowView.findViewById(R.id.textohint);
-            textView.setText(getMensajess().get(position).getUsername());
+            if (convertView == null) {
+                convertView = LayoutInflater.from(context).
+                        inflate(R.layout.list_item, parent, false);
+            }
+            // get current item to be displayed
+            ChatData currentItem = (ChatData) getItem(position);
 
-            return rowView;
+            // get the TextView for item name and item description
+            TextView textViewItemName = (TextView)
+                    convertView.findViewById(R.id.textomensajes);
+            TextView textViewItemDescription = (TextView)
+                    convertView.findViewById(R.id.textohint);
+
+            //sets the text for item name and item description from the current item object
+            textViewItemName.setText(currentItem.getUsername());
+            textViewItemDescription.setText(currentItem.getText());
+
+            // returns the view for the current row
+            return convertView;
 
         }
     }
