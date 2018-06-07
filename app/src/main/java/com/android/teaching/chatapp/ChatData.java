@@ -3,7 +3,7 @@ package com.android.teaching.chatapp;
 public class ChatData {
 
     private String text;
-            private String username;
+    private String username;
 
     public ChatData() {
         this.text = text;

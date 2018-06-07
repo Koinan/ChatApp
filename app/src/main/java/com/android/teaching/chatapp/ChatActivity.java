@@ -25,13 +25,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class ChatActivity extends AppCompatActivity {
-    private MyAdapter myAdapter;
-    private ListView lv1;
     private ArrayList<ChatData> mensajess = new ArrayList<>();
-
-    public ArrayList<ChatData> getMensajess() {
-        return mensajess;
-    }
+    private MyAdapter myAdapter;
+    private ListView listview;
 
 
     @Override
@@ -39,15 +35,18 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Toolbar myToolBar = findViewById(R.id.toolbar_1);
-        ListView itemsListView  = (ListView) findViewById(R.id.listview_1);
-        itemsListView.setAdapter(myAdapter);
+        listview = findViewById(R.id.listview_1);
+        myAdapter = new MyAdapter();
+        listview.setAdapter (new MyAdapter());
 
         setSupportActionBar(myToolBar);
         getSupportActionBar().setTitle("ChatApp");
         String url = "https://chatapp-1cf6d.firebaseio.com/";
         FirebaseDatabase database = FirebaseDatabase.getInstance(url);
+
         DatabaseReference referencia = database.getReference("messages");
         referencia.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot gameSnapshot:dataSnapshot.getChildren())
@@ -55,8 +54,8 @@ public class ChatActivity extends AppCompatActivity {
                     ChatData value = gameSnapshot.getValue(ChatData.class);
 
                     mensajess.add(value);
-                    Log.d("Listadejuegos", "resultado: " + value.getUsername());
-                    Log.d("Listadejuegos", "resultado: " + value.getText());
+                    Log.d("usuario", "resultado2: " + value.getUsername());
+                    Log.d("texto", "resultado: " + value.getText());
                 }
             }
 
@@ -67,13 +66,6 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
     private class MyAdapter extends BaseAdapter {
-        private ArrayList<ChatData> mensajes;
-        private Context context;
-        public MyAdapter (Context context, ArrayList<ChatData> items) {
-
-            this.mensajes = mensajes;
-        }
-
 
         //Con ésta clase creo el adaptador, que hereda de Baseadapter
         @Override
@@ -83,36 +75,28 @@ public class ChatActivity extends AppCompatActivity {
         //Count es el numero de items que tendrá, si tiene mas de la cuenta la aplicación se cierra
         @Override
         public Object getItem(int position) {
-            return mensajess.get(position);
+            return position;
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
+        public long getItemId(int i) {
+            return 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             //Éste método "infla" la XML con los datos
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).
-                        inflate(R.layout.list_item, parent, false);
-            }
-            // get current item to be displayed
-            ChatData currentItem = (ChatData) getItem(position);
 
-            // get the TextView for item name and item description
-            TextView textViewItemName = (TextView)
-                    convertView.findViewById(R.id.textomensajes);
-            TextView textViewItemDescription = (TextView)
-                    convertView.findViewById(R.id.textohint);
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.list_item, parent, false);
+            //Situo los iconos y los nombres y les añado una posición en la lista
+            TextView textView = rowView.findViewById(R.id.textomensajes);
+            textView.setText(mensajess.get(position).getText());
 
-            //sets the text for item name and item description from the current item object
-            textViewItemName.setText(currentItem.getUsername());
-            textViewItemDescription.setText(currentItem.getText());
+            TextView textView2 = rowView.findViewById(R.id.textohint);
+            textView.setText(mensajess.get(position).getUsername());
 
-            // returns the view for the current row
-            return convertView;
+            return rowView;
 
         }
     }
