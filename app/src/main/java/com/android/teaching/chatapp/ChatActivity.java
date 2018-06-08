@@ -34,16 +34,13 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Toolbar myToolBar = findViewById(R.id.toolbar_1);
-
+        ListView listview = findViewById(R.id.listview_1);
 
 
 
         setSupportActionBar(myToolBar);
         getSupportActionBar().setTitle("ChatApp");
-        ListView listview = findViewById(R.id.listview_1);
-        myAdapter = new MyAdapter();
-        listview.setAdapter (new MyAdapter());
-        listview.setEmptyView(findViewById(R.id.list_item));
+
 
         String url = "https://chatapp-1cf6d.firebaseio.com/";
         FirebaseDatabase database = FirebaseDatabase.getInstance(url);
@@ -57,7 +54,9 @@ public class ChatActivity extends AppCompatActivity {
                 for (DataSnapshot gameSnapshot:dataSnapshot.getChildren())
                 {
                     ChatData value = gameSnapshot.getValue(ChatData.class);
-
+                    ListView listview = findViewById(R.id.listview_1);
+                    myAdapter = new MyAdapter();
+                    listview.setAdapter (new MyAdapter());
                     mensajess.add(value);
                     Log.d("usuario", "resultado2: " + value.getUsername());
                     Log.d("texto", "resultado: " + value.getText());
@@ -96,11 +95,12 @@ public class ChatActivity extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.list_item, parent, false);
             //Situo los iconos y los nombres y les añado una posición en la lista
+            TextView textView2 = rowView.findViewById(R.id.textohint);
+            textView2.setText(mensajess.get(position).getUsername());
             TextView textView = rowView.findViewById(R.id.textomensajes);
             textView.setText(mensajess.get(position).getText());
 
-            TextView textView2 = rowView.findViewById(R.id.textohint);
-            textView.setText(mensajess.get(position).getUsername());
+
 
             return rowView;
 

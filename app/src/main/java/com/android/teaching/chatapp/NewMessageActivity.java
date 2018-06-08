@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
 public class NewMessageActivity extends AppCompatActivity {
@@ -31,7 +32,12 @@ public class NewMessageActivity extends AppCompatActivity {
         myActionBar.setDisplayHomeAsUpEnabled(true);
         messageEditText = findViewById(R.id.messageedittext);
         usernameEditText = findViewById(R.id.usernameedittext);
+        String token = FirebaseInstanceId.getInstance().getToken();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference("device_push_token");
+        databaseReference.setValue(token);
     }
+
 
 
 
@@ -42,10 +48,16 @@ public class NewMessageActivity extends AppCompatActivity {
             messageEditText.setError("El mensaje no puede estar vacío");
         } else if (TextUtils.isEmpty(username)) {
             usernameEditText.setError("El usuario no puede estar vacío");
-
         } else {
+            ChatData model = new ChatData();
+            model.setText(messageEditText.getText().toString());
+            model.setUsername(usernameEditText.getText().toString());
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("messages");
+            String id = myRef.push().getKey();
+            myRef.child(id).setValue(model);
 
-
+            finish();
         }
         }
     }
